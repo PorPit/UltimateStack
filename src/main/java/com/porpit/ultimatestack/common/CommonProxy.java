@@ -1,6 +1,6 @@
 package com.porpit.ultimatestack.common;
 
-import com.porpit.ultimatestack.common.config.ConfigLoader;
+import com.porpit.ultimatestack.config.ConfigLoader;
 import com.porpit.ultimatestack.common.event.EventLoader;
 import com.porpit.ultimatestack.item.ItemLoader;
 import com.porpit.ultimatestack.network.NetworkLoader;
@@ -8,7 +8,6 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
-import net.minecraftforge.oredict.OreDictionary;
 
 public class CommonProxy {
     public void preInit(FMLPreInitializationEvent event) {
@@ -19,7 +18,9 @@ public class CommonProxy {
     }
 
     public void init(FMLInitializationEvent event) {
+        new OreDictionaryLoader(event);
         ConfigLoader.loadItemData();
+
     }
 
     public void postInit(FMLPostInitializationEvent event) {

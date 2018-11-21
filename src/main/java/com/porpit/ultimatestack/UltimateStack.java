@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
 public class UltimateStack {
     public static final String MODID = "ultimatestack";
     public static final String NAME = "UltimateStack";
-    public static final String VERSION = "1.0.0-alpha-1";
+    public static final String VERSION = "1.0.0";
 
     @SidedProxy(clientSide = "com.porpit.ultimatestack.client.ClientProxy", serverSide = "com.porpit.ultimatestack.common.CommonProxy")
     public static CommonProxy proxy;

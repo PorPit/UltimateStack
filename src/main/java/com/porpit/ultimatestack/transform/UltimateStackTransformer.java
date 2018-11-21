@@ -2,14 +2,13 @@ package com.porpit.ultimatestack.transform;
 
 import com.porpit.ppcore.transform.PPCoreTransformer;
 import com.porpit.ppcore.transform.Transformer;
-import com.porpit.ultimatestack.common.config.ConfigLoader;
+import com.porpit.ultimatestack.config.ConfigLoader;
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.tree.*;
 
-import javax.security.auth.login.Configuration;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -444,9 +443,16 @@ public class UltimateStackTransformer extends PPCoreTransformer implements IClas
         addTransformer(new Transformer("net.minecraft.item.ItemStack") {
             @Override
             public byte[] transform(byte[] data) {
+
+               data=spliceClasses(data, "com.porpit.ultimatestack.transform.patch.ItemStackPatch", "getMaxStackSize", "func_77976_d"
+                       );
+
                 ClassReader classReader = new ClassReader(data);
                 ClassNode node = new ClassNode();
                 classReader.accept(node, 0);
+
+
+
                 MethodNode m = findMethod(node, "writeToNBT", "(Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/nbt/NBTTagCompound;");
                 AbstractInsnNode currentNode = null;
                 @SuppressWarnings("unchecked")

@@ -1,17 +1,14 @@
 package com.porpit.ultimatestack.common.event;
 
 import com.porpit.ultimatestack.UltimateStack;
-import com.porpit.ultimatestack.common.config.ConfigLoader;
+import com.porpit.ultimatestack.config.ConfigLoader;
 import com.porpit.ultimatestack.network.MessageItemConfig;
 import com.porpit.ultimatestack.network.NetworkLoader;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.item.Item;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-import net.minecraftforge.oredict.OreDictionary;
 
 public class EventLoader {
     public EventLoader()

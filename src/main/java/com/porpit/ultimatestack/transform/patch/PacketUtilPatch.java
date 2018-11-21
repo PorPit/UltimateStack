@@ -1,6 +1,6 @@
 package com.porpit.ultimatestack.transform.patch;
 
-import com.porpit.ultimatestack.common.config.ConfigLoader;
+import com.porpit.ultimatestack.config.ConfigLoader;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;

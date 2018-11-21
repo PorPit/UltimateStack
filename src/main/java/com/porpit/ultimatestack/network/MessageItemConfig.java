@@ -1,8 +1,9 @@
 package com.porpit.ultimatestack.network;
 
-import com.porpit.ultimatestack.common.config.ConfigLoader;
+import com.porpit.ultimatestack.config.ConfigLoader;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.client.Minecraft;
+import net.minecraft.item.Item;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
 import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
 import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
@@ -27,11 +28,10 @@ public class MessageItemConfig implements IMessage {
         int count = buf.readInt();
         itemMaxStackSizeMap = new HashMap<>();
         for (int i = 0; i < count; i++) {
-            short nameLength = buf.readShort();
-            byte nameBytes[] = new byte[nameLength];
-            buf.readBytes(nameBytes);
-            String name = new String(nameBytes);
-            itemMaxStackSizeMap.put(name, buf.readShort());
+            int itemID=buf.readInt();
+            int metaData=buf.readInt();
+            short maxSize=buf.readShort();
+            itemMaxStackSizeMap.put(Item.getItemById(itemID).getRegistryName()+":"+metaData, maxSize) ;
         }
     }
 
@@ -40,9 +40,18 @@ public class MessageItemConfig implements IMessage {
         buf.writeInt(itemMaxStackSizeMap.size());
         itemMaxStackSizeMap.forEach((key, value) ->
         {
-            byte[] nameBytes = key.getBytes();
-            buf.writeShort(nameBytes.length);
-            buf.writeBytes(nameBytes);
+            String[] nameAndMeta= key.split(":");
+            String itemID=nameAndMeta[0];
+            for(int i=1;i<nameAndMeta.length-1;i++){
+                itemID+=(":"+nameAndMeta[i]);
+            }
+            int metaData= Integer.valueOf(nameAndMeta[nameAndMeta.length-1]);
+
+
+            int itemIntID= Item.getIdFromItem(Item.getByNameOrId(itemID));
+
+            buf.writeInt(itemIntID);
+            buf.writeInt(metaData);
             buf.writeShort(value);
         });
     }
