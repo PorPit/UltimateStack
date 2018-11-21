@@ -1,0 +1,22 @@
+sudo: required
+dist: trusty
+
+language: java
+
+before_script:
+- chmod +x gradlew
+before_install:
+ - chmod +x gradlew 
+ 
+jdk:
+  - oraclejdk8
+
+git:
+  submodules: false
+
+
+install: ./gradlew setupDecompWorkspace
+script: ./gradlew build
+
+notifications:
+  email: false
