@@ -30,6 +30,9 @@ minecraft {
     // Use non-default mappings at your own risk. they may not always work.
     // simply re-run your setup task after changing the mappings to update your workspace.
     mappings = "snapshot_20171003"
+    replace "%UltimateStackVersion%", project.version
+    replace "%PPCoreVersion%", "${RequestCoreVersion}"
+    replaceIn "UltimateStack.java"
     // makeObfSourceJar = false // an Srg named sources jar is made by default. uncomment this to disable.
 }
 

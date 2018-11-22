@@ -15,7 +15,7 @@ public class PacketUtilPatch {
         }
         else
         {
-            System.out.println("write to Server"+stack);
+            //System.out.println("write to Server"+stack);
             buffer.writeShort(Item.getIdFromItem(stack.getItem()));
             if (ConfigLoader.isServerSuport) {
                 if (stack.getCount()>0&&stack.getCount()<=Byte.MAX_VALUE) {

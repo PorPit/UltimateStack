@@ -21,7 +21,7 @@ public class PacketBufferPatch extends PacketBuffer {
         }
         else
         {
-            System.out.println("writeItem"+stack);
+            //System.out.println("writeItem"+stack);
 
             this.writeShort(Item.getIdFromItem(stack.getItem()));
             if (stack.getCount()>0&&stack.getCount()<=Byte.MAX_VALUE) {
@@ -57,7 +57,7 @@ public class PacketBufferPatch extends PacketBuffer {
         }
         else
         {
-            System.out.println("loadItem");
+           // System.out.println("loadItem");
             int j = this.readByte();
             if(j==-8){
                 j=this.readShort();

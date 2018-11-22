@@ -4,6 +4,7 @@ import com.porpit.ultimatestack.config.ConfigLoader;
 import com.porpit.ultimatestack.common.event.EventLoader;
 import com.porpit.ultimatestack.item.ItemLoader;
 import com.porpit.ultimatestack.network.NetworkLoader;
+import com.porpit.ultimatestack.network.version.VersionChecker;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -15,6 +16,7 @@ public class CommonProxy {
         new NetworkLoader(event);
         new EventLoader();
         new ItemLoader(event);
+        new VersionChecker();
     }
 
     public void init(FMLInitializationEvent event) {

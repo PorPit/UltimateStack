@@ -3,6 +3,7 @@ package com.porpit.ultimatestack.config;
 import com.google.common.collect.Lists;
 import com.porpit.ultimatestack.UltimateStack;
 import com.porpit.ultimatestack.util.ItemHelper;
+import net.minecraft.client.Minecraft;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -17,6 +18,7 @@ import net.minecraftforge.oredict.OreDictionary;
 
 import java.io.*;
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class ConfigLoader {
 
@@ -244,14 +246,14 @@ public class ConfigLoader {
             }
             NonNullList<ItemStack> lst = NonNullList.create();
             item.getSubItems(CreativeTabs.SEARCH, lst);
-            System.out.println("Item:" + item.getRegistryName());
+            //System.out.println("Item:" + item.getRegistryName());
             lst.forEach(itemStack ->
             {
                 String modId = item.getRegistryName().getResourceDomain();
                 String registryName = item.getRegistryName().toString();
                 int metedata = itemStack.getMetadata();
                 String stackName = registryName + ":" + metedata;
-                System.out.println("ItemStack:" + item.getRegistryName() + ":" + itemStack.getMetadata() + ": NameKey" + itemStack.getUnlocalizedName());
+                //System.out.println("ItemStack:" + item.getRegistryName() + ":" + itemStack.getMetadata() + ": NameKey" + itemStack.getUnlocalizedName());
 
                 Configuration config = getModConfig(modId);
                 String translateKey = itemStack.getUnlocalizedName();

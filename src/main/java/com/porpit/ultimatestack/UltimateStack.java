@@ -6,11 +6,12 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = UltimateStack.MODID, name = UltimateStack.NAME, version = UltimateStack.VERSION,dependencies = "required-after:ppcore@[1.0.0,);", acceptedMinecraftVersions = "1.12.2")
+@Mod(modid = UltimateStack.MODID, name = UltimateStack.NAME, version = UltimateStack.VERSION,dependencies = "required-after:ppcore@[%PPCoreVersion%" +
+        ",);", acceptedMinecraftVersions = "1.12.2")
 public class UltimateStack {
     public static final String MODID = "ultimatestack";
     public static final String NAME = "UltimateStack";
-    public static final String VERSION = "1.0.0";
+    public static final String VERSION = "%UltimateStackVersion%";
 
     @SidedProxy(clientSide = "com.porpit.ultimatestack.client.ClientProxy", serverSide = "com.porpit.ultimatestack.common.CommonProxy")
     public static CommonProxy proxy;
@@ -42,6 +43,7 @@ public class UltimateStack {
 
     @Mod.EventHandler
     public void serverStarted(FMLServerStartedEvent event) {
-
+        logger.info("UltimateStack (终极堆叠) MOD 成功加载! 作者:PorPit(泼皮)");
+        logger.info("如有问题反馈 https://github.com/PorPit/UltimateStack/issues   泼皮QQ:692066768");
     }
 }
