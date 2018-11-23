@@ -44,7 +44,7 @@ esac
 
 # For Cygwin, ensure paths are in UNIX format before anything is touched.
 if $cygwin ; then
-    [ -n "/usr/local/jdk1.8" ] && JAVA_HOME=`cygpath --unix "/usr/local/jdk1.8"`
+    [ -n "$JAVA_HOME" ] && JAVA_HOME=`cygpath --unix "$JAVA_HOME"`
 fi
 
 # Attempt to set APP_HOME
@@ -68,15 +68,15 @@ cd "$SAVED" >&-
 CLASSPATH=$APP_HOME/gradle/wrapper/gradle-wrapper.jar
 
 # Determine the Java command to use to start the JVM.
-if [ -n "/usr/local/jdk1.8" ] ; then
-    if [ -x "/usr/local/jdk1.8/jre/sh/java" ] ; then
+if [ -n "$JAVA_HOME" ] ; then
+    if [ -x "$JAVA_HOME/jre/sh/java" ] ; then
         # IBM's JDK on AIX uses strange locations for the executables
-        JAVACMD="/usr/local/jdk1.8/jre/sh/java"
+        JAVACMD="$JAVA_HOME/jre/sh/java"
     else
-        JAVACMD="/usr/local/jdk1.8/bin/java"
+        JAVACMD="$JAVA_HOME/bin/java"
     fi
     if [ ! -x "$JAVACMD" ] ; then
-        die "ERROR: JAVA_HOME is set to an invalid directory: /usr/local/jdk1.8
+        die "ERROR: JAVA_HOME is set to an invalid directory: $JAVA_HOME
 
 Please set the JAVA_HOME variable in your environment to match the
 location of your Java installation."
