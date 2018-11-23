@@ -41,7 +41,7 @@ apply plugin: "org.spongepowered.plugin"
 
 version = "${Mod_Version}"
 group = "com.porpit.ultimatestack" // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = "UltimateStack"
+archivesBaseName = "UltimateStack-1.12.2"
 
 sourceCompatibility = targetCompatibility = '1.8' // Need this here so eclipse task generates correctly.
 compileJava {
