@@ -1,14 +1,42 @@
+
 buildscript {
     repositories {
         jcenter()
-        maven { url = "http://files.minecraftforge.net/maven" }
+        maven {
+            name = "shared"
+            url = "http://files.minecraftforge.net/maven"
+        }
+        maven {
+            url = "https://plugins.gradle.org/m2/"
+        }
+        maven {
+            name = "sonatype"
+            url = "https://oss.sonatype.org/content/repositories/snapshots/"
+        }
+        maven {
+            name = "sponge"
+            url "http://repo.spongepowered.org/maven/"
+        }
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath "net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT"
+        classpath 'gradle.plugin.org.spongepowered:spongegradle:0.8.1'
+        classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
     }
 }
-apply plugin: 'net.minecraftforge.gradle.forge'
-//Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+
+allprojects {
+    repositories {
+        maven {
+            url 'https://jitpack.io'
+        }
+    }
+}
+
+
+apply plugin: "net.minecraftforge.gradle.forge"
+apply plugin: "org.spongepowered.plugin"
+
 
 
 version = "${Mod_Version}"
@@ -37,6 +65,8 @@ minecraft {
 }
 
 dependencies {
+    compile 'org.spongepowered:spongeapi:7.1.0-SNAPSHOT'
+
     // you may put jars on which you depend on in ./libs
     // or you may define them like so..
     //compile "some.group:artifact:version:classifier"

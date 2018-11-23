@@ -10,6 +10,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraftforge.common.config.ConfigCategory;
 import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.common.config.Property;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -36,6 +37,8 @@ public class ConfigLoader {
 
 
     public static String modConfigurationDirectory;
+
+    public static short defaultMaxStackSize=64;
 
     public ConfigLoader(FMLPreInitializationEvent event) {
 
@@ -67,7 +70,25 @@ public class ConfigLoader {
 
     public static void load() {
         UltimateStack.logger.info("Started loading config. ");
+        loadMainConfig();
         UltimateStack.logger.info("Finished loading config. ");
+    }
+
+    public static void loadMainConfig(){
+        Configuration mainConfig = new Configuration(new File(modConfigurationDirectory + "\\Setting.cfg"));
+        mainConfig.load();
+
+        String common="设置物品(除了原始堆叠为1的物品)默认最大堆叠，可被其他设定覆盖   范围:1-"+MAX_STACK_SIZE;
+        int maxStackSize=mainConfig.get(Configuration.CATEGORY_GENERAL,"Default MaxStackSize",1000,common).getInt();
+        if(maxStackSize>MAX_STACK_SIZE){
+            maxStackSize=MAX_STACK_SIZE;
+            mainConfig.get(Configuration.CATEGORY_GENERAL,"Default MaxStackSize",1000,common).set(maxStackSize);
+        }else if(maxStackSize<=0){
+            maxStackSize=1;
+            mainConfig.get(Configuration.CATEGORY_GENERAL,"Default MaxStackSize",1000,common).set(maxStackSize);
+        }
+        defaultMaxStackSize= (short) maxStackSize;
+        mainConfig.save();
     }
 
     public static Map<String, List<ItemStack>> getCustomOreData() {
@@ -101,12 +122,13 @@ public class ConfigLoader {
         Configuration customOreConfig = new Configuration(file);
         customOreConfig.load();
 
-/*
-        Iterator<Item> iterator2= ForgeRegistries.ITEMS.iterator();
+        /*Iterator<Item> iterator2= ForgeRegistries.ITEMS.iterator();
 
         Set<String> ingotList=new HashSet<>();
         Set<String> vanillaItemList=new HashSet<>();
         Set<String> oreList=new HashSet<>();
+        Set<String> dustList=new HashSet<>();
+
 
         while (iterator2.hasNext()){
             Item item=iterator2.next();
@@ -119,8 +141,29 @@ public class ConfigLoader {
             System.out.println("Item:"+item.getRegistryName());
             ListIterator<ItemStack> itemStackListIterator=lst.listIterator();
             while (itemStackListIterator.hasNext()){
+                String modId = item.getRegistryName().getResourceDomain();
+                String registryName = item.getRegistryName().toString();
+
                 ItemStack itemStack=itemStackListIterator.next();
-                if(item.getRegistryName().toString().contains("ingot")||itemStack.getUnlocalizedName().contains("ingot"))
+
+                String translateKey = itemStack.getUnlocalizedName();
+                String translateEnd = ".name";
+
+
+                if (modId.equals("ic2") || modId.equals("advanced_solar_panels")) {
+                    translateEnd = "";
+                } else if (modId.equals("botania")) {
+                    if (!translateKey.startsWith("tile.botania:")) {
+                        translateKey = translateKey.replace("tile.", "tile.botania:");
+                    }
+                    if (!translateKey.startsWith("item.botania:")) {
+                        translateKey = translateKey.replace("item.", "item.botania:");
+                    }
+                }
+                String localName= new TextComponentTranslation(translateKey + translateEnd).getUnformattedComponentText();
+
+
+                if(item.getRegistryName().toString().contains("ingot")||itemStack.getUnlocalizedName().contains("ingot")||localName.contains("锭"))
                 {
                     ingotList.add(itemStack.getItem().getRegistryName()+":"+itemStack.getMetadata());
                 }
@@ -128,9 +171,13 @@ public class ConfigLoader {
                 {
                     vanillaItemList.add(itemStack.getItem().getRegistryName()+":"+itemStack.getMetadata());
                 }
-                if(item.getRegistryName().toString().contains("ore")||itemStack.getUnlocalizedName().contains("ore"))
+                if(item.getRegistryName().toString().contains("ore")||itemStack.getUnlocalizedName().contains("ore")||localName.endsWith("矿石"))
                 {
                     oreList.add(itemStack.getItem().getRegistryName()+":"+itemStack.getMetadata());
+                }
+                if(item.getRegistryName().toString().contains("dust")||itemStack.getUnlocalizedName().contains("dust")||localName.contains("粉")||localName.contains("渣")||localName.contains("尘")||localName.contains("碎片")||localName.contains("料"))
+                {
+                    dustList.add(itemStack.getItem().getRegistryName()+":"+itemStack.getMetadata());
                 }
             }
         }
@@ -140,9 +187,10 @@ public class ConfigLoader {
         customOreConfig.get("CustomOre","us_mc_vanilla" ,new String[] {"none"},"原版物品").set(vanillaItemList.toArray(data));
         data=new String[oreList.size()];
         customOreConfig.get("CustomOre","us_ore" ,new String[] {"none"},"矿石").set(oreList.toArray(data));
+        data=new String[dustList.size()];
+        customOreConfig.get("CustomOre","us_dust" ,new String[] {"none"},"粉渣等杂物").set(dustList.toArray(data));
+
 */
-
-
         Iterator<Property> iterator = customOreConfig.getCategory("CustomOre").getValues().values().iterator();
         customOreConfig.getCategory("CustomOre").setComment("设置自定义矿典   注意矿典名称前要加S:");
         while (iterator.hasNext()) {
@@ -155,10 +203,11 @@ public class ConfigLoader {
 
                     String[] nameAndMeta = itemStackID.split(":");
                     String itemID = nameAndMeta[0];
-                    for (int j = 1; j < nameAndMeta.length - 1; j++) {
-                        itemID += (":" + nameAndMeta[j]);
+                     itemID += (":" + nameAndMeta[1]);
+                    int metaData = 0;
+                    if(nameAndMeta.length>=3){
+                        metaData= Integer.valueOf(nameAndMeta[2]);
                     }
-                    int metaData = Integer.valueOf(nameAndMeta[nameAndMeta.length - 1]);
 
                     Item item = Item.getByNameOrId(itemID);
                     if (item != null) {
@@ -273,6 +322,9 @@ public class ConfigLoader {
                 config.setCategoryComment("ItemStackMaxSize", "设置物品对应最大堆叠  " + allowRange + " 设置为0则由矿典决定");
                 Property p = config.get("ItemStackMaxSize", stackName, 0, comment);
                 int maxStackSize = itemStack.getMaxStackSize();
+                if(maxStackSize!=1){
+                    maxStackSize=defaultMaxStackSize;
+                }
                 if (p.getInt() > 0) {
                     maxStackSize = p.getInt();
                     if (maxStackSize > MAX_STACK_SIZE) {
