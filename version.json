@@ -1,7 +1,14 @@
 {
-    "errcode": "0",
-    "mcversion": "1.12.2",
-    "modversion": "1.1.0",
-    "updateDate": "2018/11/23",
-    "info": "支持默认堆叠设置等"
+  "homepage": "http://job.porpit.cn:233/job/UltimateStack/",
+  "1.12.2": {
+    "1.1.0": "正式发布"
+  },
+  ...
+  "promos": {
+    "1.12.2-latest": "1.1.0",
+    "1.12.2-recommended": "1.1.0"
+  }
+  "updateDate" :{
+     "1.1.0": "2018/11/23"
+  }
 }
