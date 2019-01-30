@@ -4,6 +4,7 @@ import com.porpit.ppcore.transform.PPCoreTransformer;
 import com.porpit.ppcore.transform.Transformer;
 import com.porpit.ultimatestack.config.ConfigLoader;
 import net.minecraft.launchwrapper.IClassTransformer;
+import net.minecraftforge.fml.common.versioning.ComparableVersion;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
@@ -74,7 +75,7 @@ public class UltimateStackTransformer extends PPCoreTransformer implements IClas
                     if (currentNode instanceof FieldInsnNode) {
                         if (((FieldInsnNode) currentNode).name.equals(patchFieldName("RANDOM"))) {
                             if (currentNode.getNext() instanceof IntInsnNode && ((IntInsnNode) currentNode.getNext()).operand == 21) {
-                                m.instructions.set(currentNode.getNext(), new IntInsnNode(Opcodes.SIPUSH, ConfigLoader.MAX_STACK_SIZE/3));
+                                m.instructions.set(currentNode.getNext(), new IntInsnNode(Opcodes.SIPUSH, ConfigLoader.MAX_STACK_SIZE / 3));
                                 System.out.println("Patched Method:" + className + ".spawnItemStack:" + "Random Range");
                             }
                         }
@@ -405,7 +406,7 @@ public class UltimateStackTransformer extends PPCoreTransformer implements IClas
                     if (currentNode instanceof MethodInsnNode) {
                         if (((MethodInsnNode) currentNode).name.equals(patchMethodName("net.minecraft.item.ItemStack", "getCount", "()I"))) {
                             if (currentNode.getNext() instanceof IntInsnNode) {
-                                m.instructions.set(currentNode.getNext(), new IntInsnNode(Opcodes.SIPUSH,  ConfigLoader.MAX_STACK_SIZE));
+                                m.instructions.set(currentNode.getNext(), new IntInsnNode(Opcodes.SIPUSH, ConfigLoader.MAX_STACK_SIZE));
                                 System.out.println("Patched Method:" + className + ".processCreativeInventoryAction:" + " Creative Clone");
                             }
                         }
@@ -444,13 +445,12 @@ public class UltimateStackTransformer extends PPCoreTransformer implements IClas
             @Override
             public byte[] transform(byte[] data) {
 
-               data=spliceClasses(data, "com.porpit.ultimatestack.transform.patch.ItemStackPatch", "getMaxStackSize", "func_77976_d"
-                       );
+                data = spliceClasses(data, "com.porpit.ultimatestack.transform.patch.ItemStackPatch", "getMaxStackSize", "func_77976_d"
+                );
 
                 ClassReader classReader = new ClassReader(data);
                 ClassNode node = new ClassNode();
                 classReader.accept(node, 0);
-
 
 
                 MethodNode m = findMethod(node, "writeToNBT", "(Lnet/minecraft/nbt/NBTTagCompound;)Lnet/minecraft/nbt/NBTTagCompound;");
@@ -552,10 +552,69 @@ public class UltimateStackTransformer extends PPCoreTransformer implements IClas
             }
         });
 
-        List<String> ironChestClass = new ArrayList<>();
-        ironChestClass.add("cpw.mods.ironchest.common.tileentity.chest.TileEntityIronChest");
-        ironChestClass.add("cpw.mods.ironchest.common.tileentity.shulker.TileEntityIronShulkerBox");
-        for (String className : ironChestClass) {
+        addTransformer(new Transformer("noppes.npcs.NpcMiscInventory") {
+            @Override
+            public byte[] transform(byte[] data) {
+                ClassReader classReader = new ClassReader(data);
+                ClassNode node = new ClassNode();
+                classReader.accept(node, 0);
+                //node.methods.forEach(it-> System.out.println(it.name+";"+it.desc));
+                MethodNode m = findMethod(node, "<init>", "(I)V");
+                AbstractInsnNode currentNode = null;
+                @SuppressWarnings("unchecked")
+                Iterator<AbstractInsnNode> iter = m.instructions.iterator();
+
+                while (iter.hasNext()) {
+                    currentNode = iter.next();
+/*                    if (currentNode instanceof MethodInsnNode) {
+                        System.out.println("MethodInsnNode:"+((MethodInsnNode) currentNode).name);
+
+                    }*/
+                    if (currentNode instanceof FieldInsnNode) {
+                        if (currentNode.getPrevious() instanceof IntInsnNode && ((IntInsnNode) currentNode.getPrevious()).operand == 64) {
+                            m.instructions.set(currentNode.getPrevious(), new IntInsnNode(Opcodes.SIPUSH, ConfigLoader.MAX_STACK_SIZE));
+                            System.out.println("[patched NPC Method]" + className + ".<init>:" + " MaxStackSize");
+
+                        }
+                    }
+                   /* if (currentNode instanceof VarInsnNode) {
+                        System.out.println("VarInsnNode:"+((VarInsnNode) currentNode).var);
+                    }
+                    if (currentNode instanceof LdcInsnNode) {
+                        System.out.println("LdcInsnNode:"+((LdcInsnNode) currentNode).cst);
+                    }
+
+                    if (currentNode instanceof InsnNode) {
+                        System.out.println("InsnNode:"+((InsnNode) currentNode).getType());
+                    }
+                    if (currentNode instanceof IntInsnNode) {
+                        System.out.println("InsnNode:"+((IntInsnNode) currentNode).operand);
+                    }
+                    if (currentNode instanceof LabelNode) {
+                        System.out.println("LabelNode:"+((LabelNode) currentNode).getLabel().info);
+                    }
+                    if (currentNode instanceof LineNumberNode) {
+                        System.out.println("LineNumberNode:"+((LineNumberNode) currentNode).line);
+                    }*/
+                }
+                ClassWriter writer = new ClassWriter(0);
+                node.accept(writer);
+                return writer.toByteArray();
+            }
+        });
+
+        List<String> modIInventoryClass = new ArrayList<>();
+        modIInventoryClass.add("cpw.mods.ironchest.common.tileentity.chest.TileEntityIronChest");
+        modIInventoryClass.add("cpw.mods.ironchest.common.tileentity.shulker.TileEntityIronShulkerBox");
+        modIInventoryClass.add("noppes.npcs.controllers.data.PlayerMail");
+        modIInventoryClass.add("noppes.npcs.containers.InventoryNpcTrader");
+        modIInventoryClass.add("noppes.npcs.containers.InventoryNPC");
+        modIInventoryClass.add("noppes.npcs.containers.SlotNpcBankCurrency");
+        modIInventoryClass.add("noppes.npcs.containers.SlotNpcMercenaryCurrency");
+        modIInventoryClass.add("noppes.npcs.containers.SlotNpcTraderItems");
+        modIInventoryClass.add("noppes.npcs.entity.data.DataInventory");
+
+        for (String className : modIInventoryClass) {
             addTransformer(new Transformer(className) {
                 @Override
                 public byte[] transform(byte[] data) {
@@ -563,16 +622,36 @@ public class UltimateStackTransformer extends PPCoreTransformer implements IClas
                     ClassNode node = new ClassNode();
                     classReader.accept(node, 0);
                     MethodNode m = findMethod(node, "func_70297_j_", "()I");
-                    AbstractInsnNode currentNode = null;
-                    @SuppressWarnings("unchecked")
-                    Iterator<AbstractInsnNode> iter = m.instructions.iterator();
-                    while (iter.hasNext()) {
-                        currentNode = iter.next();
-                        if (currentNode instanceof IntInsnNode && ((IntInsnNode) currentNode).operand == 64) {
-                            m.instructions.set(currentNode, new IntInsnNode(Opcodes.SIPUSH, ConfigLoader.MAX_STACK_SIZE));
-                            System.out.println("[patched IronChest Method]" + className + ".func_70297_j_:" + " MaxStackSize");
+                    if (m != null) {
+                        AbstractInsnNode currentNode = null;
+                        @SuppressWarnings("unchecked")
+                        Iterator<AbstractInsnNode> iter = m.instructions.iterator();
+                        while (iter.hasNext()) {
+                            currentNode = iter.next();
+                            if (currentNode instanceof IntInsnNode && ((IntInsnNode) currentNode).operand == 64) {
+                                m.instructions.set(currentNode, new IntInsnNode(Opcodes.SIPUSH, ConfigLoader.MAX_STACK_SIZE));
+                                System.out.println("[patched Mod Method]" + className + ".func_70297_j_:" + " MaxStackSize");
+                            }
                         }
+
                     }
+
+                    m = findMethod(node, "func_75219_a", "()I");
+                    if (m != null) {
+                        
+                        AbstractInsnNode currentNode = null;
+                        @SuppressWarnings("unchecked")
+                        Iterator<AbstractInsnNode> iter = m.instructions.iterator();
+                        while (iter.hasNext()) {
+                            currentNode = iter.next();
+                            if (currentNode instanceof IntInsnNode && ((IntInsnNode) currentNode).operand == 64) {
+                                m.instructions.set(currentNode, new IntInsnNode(Opcodes.SIPUSH, ConfigLoader.MAX_STACK_SIZE));
+                                System.out.println("[patched Mod Method]" + className + ".func_75219_a:" + " MaxStackSize");
+                            }
+                        }
+
+                    }
+
                     ClassWriter writer = new ClassWriter(0);
                     node.accept(writer);
                     return writer.toByteArray();

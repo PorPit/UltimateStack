@@ -36,7 +36,7 @@ public class EventLoader {
         NetworkLoader.instance.sendTo(message,player);
 
         TextComponentTranslation text1=new TextComponentTranslation("§9§l[UltimateStack] §3终极堆叠模组  当前版本:§a "+UltimateStack.VERSION.replace("%","" ));
-        text1.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://github.com/PorPit/UltimateStack/releases"));
+        text1.getStyle().setClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, VersionChecker.downloadUrl));
         player.sendMessage(text1);
         if(VersionCompare.compareVersion(UltimateStack.VERSION,VersionChecker.newerModVersion )==-1){
             TextComponentTranslation text2=new TextComponentTranslation("§9§l[UltimateStack] §3检测到新版本:§a "+VersionChecker.newerModVersion+" ,§n点击查看");

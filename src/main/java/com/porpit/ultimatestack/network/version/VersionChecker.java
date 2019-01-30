@@ -2,6 +2,8 @@ package com.porpit.ultimatestack.network.version;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.porpit.ppcore.PPCore;
+import com.porpit.ppcore.util.JSONHelper;
 import com.porpit.ultimatestack.UltimateStack;
 
 import java.io.BufferedReader;
@@ -11,63 +13,26 @@ import java.net.URLConnection;
 
 public class VersionChecker {
 
-    public static String newerModVersion=null;
-    public static String updateDate=null;
-    public static String updateInfo=null;
-    public VersionChecker()
-    {
+    public static String newerModVersion = null;
+    public static String updateDate = null;
+    public static String updateInfo = null;
+    public static String downloadUrl = "http://job.porpit.cn:233/job/UltimateStack/";
+    public static final String VERSION_JSON_URL="https://raw.githubusercontent.com/PorPit/UltimateStack/1.12.2/version.json";
+
+    public VersionChecker() {
         new Thread(() -> getUpdateData()).start();
     }
 
-    private void getUpdateData(){
-        String result = "";
-        BufferedReader in = null;
-        try {
-            UltimateStack.logger.info("尝试获取新版本信息！");
-            String urlNameString = "https://raw.githubusercontent.com/PorPit/UltimateStack/1.12.2/version.json";
-            URL realUrl = new URL(urlNameString);
-            // 打开和URL之间的连接
-            URLConnection connection = realUrl.openConnection();
-            // 设置通用的请求属性
-            connection.setRequestProperty("accept", "*/*");
-            connection.setRequestProperty("connection", "Keep-Alive");
-            connection.setRequestProperty("user-agent",
-                    "Mozilla/4.0 (compatible; MSIE 6.0; Windows NT 5.1;SV1)");
-            // 建立实际的连接
-            connection.connect();
-            // 获取所有响应头字段
-
-            // 定义 BufferedReader输入流来读取URL的响应
-            in = new BufferedReader(new InputStreamReader(
-                    connection.getInputStream()));
-            String line;
-            while ((line = in.readLine()) != null) {
-                result += line;
-            }
-            JsonObject jsonObject=new JsonParser().parse(result).getAsJsonObject();
-            if(!jsonObject.isJsonNull())
-            {
-
-                    newerModVersion=jsonObject.get("modversion").getAsString();
-                    updateDate=jsonObject.get("updateDate").getAsString();
-                    updateInfo=jsonObject.get("info").getAsString();
-
-            }
-
-        } catch (Exception e) {
-            System.out.println("获取新版本数据出现异常！" + e);
-            e.printStackTrace();
-        }
-        // 使用finally块来关闭输入流
-        finally {
-            try {
-                if (in != null) {
-                    in.close();
-                }
-            } catch (Exception e2) {
-                e2.printStackTrace();
-            }
-        }
-
+    private void getUpdateData() {
+         JsonObject jsonObject= JSONHelper.getJsonObject(VERSION_JSON_URL);
+         if(jsonObject!=null&&!jsonObject.isJsonNull()){
+             newerModVersion = jsonObject.getAsJsonObject("promos").get("1.12.2-latest").getAsString();
+             updateDate = jsonObject.getAsJsonObject("updateDate").get(newerModVersion).getAsString();
+             updateInfo = jsonObject.getAsJsonObject("1.12.2").get(newerModVersion).getAsString();
+             UltimateStack.logger.debug("Json:" + jsonObject);
+             UltimateStack.logger.info("最新版本号:" + newerModVersion);
+             UltimateStack.logger.info("更新日期:" +  updateDate);
+             UltimateStack.logger.info("更新日志:" +  updateInfo);
+         }
     }
 }
