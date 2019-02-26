@@ -7,15 +7,12 @@ import com.porpit.ultimatestack.network.MessageItemConfig;
 import com.porpit.ultimatestack.network.NetworkLoader;
 import com.porpit.ultimatestack.network.version.VersionChecker;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.util.text.event.ClickEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 import net.minecraftforge.fml.common.network.FMLNetworkEvent;
-
-import java.awt.*;
 
 public class EventLoader {
     public EventLoader()

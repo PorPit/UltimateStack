@@ -42,13 +42,13 @@ public class ConfigLoader {
 
     public ConfigLoader(FMLPreInitializationEvent event) {
 
-        modConfigurationDirectory = event.getModConfigurationDirectory().getPath() + "\\UltimateStack";
+        modConfigurationDirectory = event.getModConfigurationDirectory().getPath() +File.separator+"UltimateStack";
         loadModConfig("minecraft");
         load();
     }
 
     public static void loadModConfig(String key) {
-        Configuration config = new Configuration(new File(modConfigurationDirectory + "\\ItemMaxStackSize\\" + key + ".cfg"));
+        Configuration config = new Configuration(new File(modConfigurationDirectory +File.separator+ "ItemMaxStackSize"+File.separator+  key + ".cfg"));
         config.load();
         modsConfigMap.put(key, config);
     }
@@ -75,7 +75,7 @@ public class ConfigLoader {
     }
 
     public static void loadMainConfig(){
-        Configuration mainConfig = new Configuration(new File(modConfigurationDirectory + "\\Setting.cfg"));
+        Configuration mainConfig = new Configuration(new File(modConfigurationDirectory + File.separator+"Setting.cfg"));
         mainConfig.load();
 
         String common="设置物品(除了原始堆叠为1的物品)默认最大堆叠，可被其他设定覆盖   范围:1-"+MAX_STACK_SIZE;
@@ -94,7 +94,7 @@ public class ConfigLoader {
     public static Map<String, List<ItemStack>> getCustomOreData() {
         Map<String, List<ItemStack>> oreItemsMap = new HashMap<>();
 
-        File file = new File(modConfigurationDirectory + "\\CustomOre.cfg");
+        File file = new File(modConfigurationDirectory + File.separator+"CustomOre.cfg");
         if (!file.exists()) {
             try {
                 InputStreamReader reader = new InputStreamReader(
@@ -230,7 +230,7 @@ public class ConfigLoader {
         oreMaxStackSizeMap.clear();
         String allowRange = "  #范围(range):" + 1 + "-" + MAX_STACK_SIZE + "  ";
 
-        File oreFile = new File(modConfigurationDirectory + "\\OreMaxStackSetting.cfg");
+        File oreFile = new File(modConfigurationDirectory + File.separator+"OreMaxStackSetting.cfg");
         if (!oreFile.exists()) {
             try {
                 InputStreamReader reader = new InputStreamReader(
