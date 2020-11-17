@@ -1,6 +1,5 @@
 package com.porpit.ultimatestack;
 
-import com.google.inject.Inject;
 import com.porpit.ultimatestack.common.CommonProxy;
 
 import com.porpit.ultimatestack.network.version.VersionChecker;
@@ -9,7 +8,7 @@ import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.*;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = UltimateStack.MODID, name = UltimateStack.NAME, version = UltimateStack.VERSION, dependencies = "required-after:ppcore@[%PPCoreVersion%,);", acceptedMinecraftVersions = "1.12.2",updateJSON=VersionChecker.VERSION_JSON_URL)
+@Mod(modid = UltimateStack.MODID, name = UltimateStack.NAME, version = UltimateStack.VERSION, dependencies = "after:ppcore@[%PPCoreVersion%,);", acceptedMinecraftVersions = "1.12.2",updateJSON=VersionChecker.VERSION_JSON_URL,guiFactory = "com.porpit.ultimatestack.config.USConfigGuiFactory")
 public class UltimateStack {
     public static final String MODID = "ultimatestack";
     public static final String NAME = "UltimateStack";

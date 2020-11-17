@@ -24,7 +24,7 @@ public class VersionChecker {
     }
 
     private void getUpdateData() {
-         JsonObject jsonObject= JSONHelper.getJsonObject(VERSION_JSON_URL);
+         JsonObject jsonObject= JSONHelper.getJsonObject(UltimateStack.logger,VERSION_JSON_URL);
          if(jsonObject!=null&&!jsonObject.isJsonNull()){
              newerModVersion = jsonObject.getAsJsonObject("promos").get("1.12.2-latest").getAsString();
              updateDate = jsonObject.getAsJsonObject("updateDate").get(newerModVersion).getAsString();

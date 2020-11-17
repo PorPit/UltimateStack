@@ -4,7 +4,6 @@ import com.porpit.ppcore.transform.PPCoreTransformer;
 import com.porpit.ppcore.transform.Transformer;
 import com.porpit.ultimatestack.config.ConfigLoader;
 import net.minecraft.launchwrapper.IClassTransformer;
-import net.minecraftforge.fml.common.versioning.ComparableVersion;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
@@ -86,35 +85,35 @@ public class UltimateStackTransformer extends PPCoreTransformer implements IClas
                 return writer.toByteArray();
             }
         });
-        addTransformer(new Transformer("org.spongepowered.common.item.inventory.util.ContainerUtil") {
-            @Override
-            public byte[] transform(byte[] data) {
-                ClassReader classReader = new ClassReader(data);
-                ClassNode node = new ClassNode();
-                classReader.accept(node, 0);
-                MethodNode m = findMethod(node, "performBlockInventoryDrops", "(Lnet/minecraft/world/WorldServer;DDDLnet/minecraft/inventory/IInventory;)V", false);
-                if (m != null) {
-                    AbstractInsnNode currentNode = null;
-                    @SuppressWarnings("unchecked")
-                    Iterator<AbstractInsnNode> iter = m.instructions.iterator();
-                    while (iter.hasNext()) {
-                        currentNode = iter.next();
-                        if (currentNode instanceof FieldInsnNode) {
-                            if (((FieldInsnNode) currentNode).name.equals(patchFieldName("RANDOM"))) {
-                                if (currentNode.getNext() instanceof IntInsnNode && ((IntInsnNode) currentNode.getNext()).operand == 21) {
-                                    m.instructions.set(currentNode.getNext(), new IntInsnNode(Opcodes.SIPUSH, 7000));
-                                    System.out.println("Patched Method:" + className + ".performBlockInventoryDrops:" + "Random Range");
-                                }
-                            }
-                        }
-                    }
-                }
-                ClassWriter writer = new ClassWriter(0);
-                node.accept(writer);
-                return writer.toByteArray();
-
-            }
-        });
+//        addTransformer(new Transformer("org.spongepowered.common.item.inventory.util.ContainerUtil") {
+//            @Override
+//            public byte[] transform(byte[] data) {
+//                ClassReader classReader = new ClassReader(data);
+//                ClassNode node = new ClassNode();
+//                classReader.accept(node, 0);
+//                MethodNode m = findMethod(node, "performBlockInventoryDrops", "(Lnet/minecraft/world/WorldServer;DDDLnet/minecraft/inventory/IInventory;)V", false);
+//                if (m != null) {
+//                    AbstractInsnNode currentNode = null;
+//                    @SuppressWarnings("unchecked")
+//                    Iterator<AbstractInsnNode> iter = m.instructions.iterator();
+//                    while (iter.hasNext()) {
+//                        currentNode = iter.next();
+//                        if (currentNode instanceof FieldInsnNode) {
+//                            if (((FieldInsnNode) currentNode).name.equals(patchFieldName("RANDOM"))) {
+//                                if (currentNode.getNext() instanceof IntInsnNode && ((IntInsnNode) currentNode.getNext()).operand == 21) {
+//                                    m.instructions.set(currentNode.getNext(), new IntInsnNode(Opcodes.SIPUSH, 7000));
+//                                    System.out.println("Patched Method:" + className + ".performBlockInventoryDrops:" + "Random Range");
+//                                }
+//                            }
+//                        }
+//                    }
+//                }
+//                ClassWriter writer = new ClassWriter(0);
+//                node.accept(writer);
+//                return writer.toByteArray();
+//
+//            }
+//        });
         addTransformer(new Transformer("net.minecraftforge.common.util.PacketUtil") {
             @Override
             public byte[] transform(byte[] data) {
@@ -607,7 +606,7 @@ public class UltimateStackTransformer extends PPCoreTransformer implements IClas
         modIInventoryClass.add("cpw.mods.ironchest.common.tileentity.chest.TileEntityIronChest");
         modIInventoryClass.add("cpw.mods.ironchest.common.tileentity.shulker.TileEntityIronShulkerBox");
         modIInventoryClass.add("noppes.npcs.controllers.data.PlayerMail");
-        modIInventoryClass.add("noppes.npcs.containers.InventoryNpcTrader");
+        modIInventoryClass.add("noppes.npcs.containers.MixinInventoryNpcTrader");
         modIInventoryClass.add("noppes.npcs.containers.InventoryNPC");
         modIInventoryClass.add("noppes.npcs.containers.SlotNpcBankCurrency");
         modIInventoryClass.add("noppes.npcs.containers.SlotNpcMercenaryCurrency");

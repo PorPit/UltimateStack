@@ -14,12 +14,12 @@ import java.util.Map;
 
 public class MessageItemConfig implements IMessage {
 
-    Map<String, Short> itemMaxStackSizeMap;
+    Map<String, Integer> itemMaxStackSizeMap;
 
     public MessageItemConfig() {
     }
 
-    public MessageItemConfig(Map<String, Short> itemMaxStackSizeMap) {
+    public MessageItemConfig(Map<String, Integer> itemMaxStackSizeMap) {
         this.itemMaxStackSizeMap = itemMaxStackSizeMap;
     }
 
@@ -30,7 +30,7 @@ public class MessageItemConfig implements IMessage {
         for (int i = 0; i < count; i++) {
             int itemID=buf.readInt();
             int metaData=buf.readInt();
-            short maxSize=buf.readShort();
+            int maxSize=buf.readInt();
             itemMaxStackSizeMap.put(Item.getItemById(itemID).getRegistryName()+":"+metaData, maxSize) ;
         }
     }
@@ -52,7 +52,7 @@ public class MessageItemConfig implements IMessage {
 
             buf.writeInt(itemIntID);
             buf.writeInt(metaData);
-            buf.writeShort(value);
+            buf.writeInt(value);
         });
     }
 
